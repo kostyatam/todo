@@ -1,6 +1,9 @@
 'use strict';
 
 import React from 'react';
+import actions from 'actions';
+
+let todoActions = actions.todoActions;
 
 export default class ListItem extends React.Component {
     constructor (props) {
@@ -17,10 +20,12 @@ export default class ListItem extends React.Component {
         if (!isEnter(event)) {
             return false;
         }
+        todoActions.itemChange();
     }
 
     onDoneChange (event) {
         let checkbox = event.target;
+        todoActions.itemChange();
     }
 
     render () {

@@ -10,7 +10,6 @@ export default class List extends React.Component {
             tasks: props.tasks || ['']
         };
     }
-
     render() {
         let state = this.state;
         let items = buildListItems(state.tasks);

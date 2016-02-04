@@ -1,8 +1,10 @@
 'use strict'
 
-import Reflux from 'reflux'
+import Reflux from 'reflux';
 
-let TodoActions = Reflux.createActions({
+let todoActions = Reflux.createActions([
     "itemChange",
     "createNew"
-});
+]);
+
+export default todoActions;
