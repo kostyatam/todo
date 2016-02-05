@@ -4,7 +4,8 @@ import Reflux from 'reflux';
 
 let todoActions = Reflux.createActions([
     "itemChange",
-    "createNew"
+    "createNew",
+    "getTasks"
 ]);
 
 export default todoActions;

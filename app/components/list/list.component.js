@@ -6,9 +6,10 @@ import ListItem from '../list-item';
 export default class List extends React.Component {
     constructor (props) {
         super(props);
-        this.state = {
-            tasks: props.tasks || ['']
-        };
+        this.state = getStateFromProps(props);
+    }
+    componentWillReceiveProps (props) {
+        this.setState(getStateFromProps(props));
     }
     render() {
         let state = this.state;
@@ -24,9 +25,15 @@ export default class List extends React.Component {
             return tasks.map((item, index) => {
                 return (
                     <li key={index}>
-                        <ListItem key={index} data={item}/>
+                        <ListItem key={index} id={index} data={item}/>
                     </li>)
             });
         }
+    }
+}
+
+function getStateFromProps (props) {
+    return {
+        tasks: props.tasks || ['']
     }
 }

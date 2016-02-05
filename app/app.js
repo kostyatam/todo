@@ -1,6 +1,7 @@
 'use strict';
 
-require('./index.html');
+import './index.html';
+import 'babel-polyfill'
 import React from 'react';
 import ReactDom from 'react-dom';
 

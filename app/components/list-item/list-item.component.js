@@ -8,24 +8,30 @@ let todoActions = actions.todoActions;
 export default class ListItem extends React.Component {
     constructor (props) {
         super(props);
-        this.state = {
-            task: props.data.task,
-            isDone: props.data.isDone
-        };
+        this.state = getStateFromProps(props);
         this.onKeyPress = this.onKeyPress.bind(this);
         this.onDoneChange = this.onDoneChange.bind(this);
+    }
+
+    componentWillReceiveProps (props) {
+        this.setState(getStateFromProps(props));
     }
 
     onKeyPress (event) {
         if (!isEnter(event)) {
             return false;
         }
-        todoActions.itemChange();
+        let item = event.target;
+        let value = item.value;
+        let key = this.state.id;
+        todoActions.itemChange(key, 'task', value);
     }
 
     onDoneChange (event) {
         let checkbox = event.target;
-        todoActions.itemChange();
+        let value = checkbox.checked;
+        let key = this.state.id;
+        todoActions.itemChange(key, 'isDone', value);
     }
 
     render () {
@@ -43,6 +49,14 @@ export default class ListItem extends React.Component {
                     type="text"/>
             </div>
         )
+    }
+}
+
+function getStateFromProps (props) {
+    return {
+        task: props.data.task,
+        isDone: props.data.isDone,
+        id: props.id
     }
 }
 
