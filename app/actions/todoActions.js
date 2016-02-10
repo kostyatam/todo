@@ -3,9 +3,10 @@
 import Reflux from 'reflux';
 
 let todoActions = Reflux.createActions([
-    "itemChange",
-    "createNew",
-    "getTasks"
+    "changeItem",
+    "deleteItem",
+    "createItem",
+    "getLists"
 ]);
 
 export default todoActions;

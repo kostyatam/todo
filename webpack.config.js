@@ -50,7 +50,9 @@ module.exports = {
             components: path.join(__dirname, '/app/components'),
             actions: path.join(__dirname, '/app/actions'),
             stores: path.join(__dirname, '/app/stores'),
-            mock: path.join(__dirname, 'mock')
+            routes: path.join(__dirname, '/app/routes/routes'),
+            mock: path.join(__dirname, 'mock'),
+            utils: path.join(__dirname, 'app/utils')
         }
     }
 };

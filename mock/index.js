@@ -1,5 +1,5 @@
-import tasks from './todoTasks';
+import lists from './todoTasks';
 
 export default {
-    tasks
+    lists
 }

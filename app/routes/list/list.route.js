@@ -14,21 +14,26 @@ export default class ListPage extends React.Component {
     constructor (props) {
         super(props);
         this.state = {
-            tasks: []
+            lists: []
         };
         this.onChange = this.onChange.bind(this);
     }
-    onChange(tasks) {
+    onChange(lists) {
         this.setState({
-            tasks: tasks
+            lists: lists
         });
     }
     componentDidMount () {
         this.unsubscribe = todoStore.listen(this.onChange);
-        todoActions.getTasks();
+        todoActions.getLists();
     }
     render () {
         var state = this.state;
-        return (<List tasks={state.tasks}/>);
+        var Lists = state.lists.map((list, key) => {return <List key={key} list={list}/>});
+        return (
+            <div>
+                {Lists}
+            </div>
+        );
     }
 }

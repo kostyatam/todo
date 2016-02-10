@@ -1,7 +1,9 @@
 'use strict'
 
 import React from 'react';
-import ListItem from '../list-item';
+import ListItem from './list-item';
+import ListTitle from './list-title';
+import ListHeader from './list-header';
 
 export default class List extends React.Component {
     constructor (props) {
@@ -13,19 +15,33 @@ export default class List extends React.Component {
     }
     render() {
         let state = this.state;
-        let items = buildListItems(state.tasks);
+        let items = buildListItems(state.tasks, state.listId);
+        let dest = {
+            listId: state.listId
+        };
 
         return (
-            <ul>
-                {items}
-            </ul>
+            <section>
+                <ListTitle title={state.title}/>
+                <ListHeader dest={dest} task={state.task}/>
+                <ul>
+                    {items}
+                </ul>
+            </section>
         );
 
-        function buildListItems (tasks) {
+        function buildListItems (tasks, listId) {
             return tasks.map((item, index) => {
+                let dest ={
+                    listId,
+                    itemId: index
+                };
                 return (
                     <li key={index}>
-                        <ListItem key={index} id={index} data={item}/>
+                        <ListItem
+                            key={index}
+                            dest={dest}
+                            data={item}/>
                     </li>)
             });
         }
@@ -33,7 +49,10 @@ export default class List extends React.Component {
 }
 
 function getStateFromProps (props) {
+    let {list} = props;
     return {
-        tasks: props.tasks || ['']
+        tasks: list.tasks,
+        listId: list.id,
+        title: list.title
     }
 }
