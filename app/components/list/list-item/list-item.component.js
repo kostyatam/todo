@@ -1,10 +1,7 @@
 'use strict';
 
 import React from 'react';
-import actions from 'actions';
-import utils from 'utils'
-
-let todoActions = actions.todoActions;
+import {todoActions} from 'actions';
 
 export default class ListItem extends React.Component {
     constructor (props) {

@@ -1,6 +1,8 @@
 'use strict'
-import list from './list';
+import List from './list';
+import Otherwise from './otherwise';
 
-export default {
-    list
+export {
+    List,
+    Otherwise
 }

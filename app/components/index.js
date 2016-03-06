@@ -1,6 +1,6 @@
 'use strict';
 import list from './list';
 
-export default {
+export {
     list
 }

@@ -6,12 +6,12 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var node_modules = path.resolve(__dirname, 'node_modules');
 var pathToReact = path.resolve(node_modules, 'react/dist/react.min.js');
 
+
 module.exports = {
     devtool: 'source-map',
-    contentBase: path.resolve(__dirname, 'build'),
     entry: path.resolve(__dirname, 'app/app.js'),
     output: {
-        path: path.resolve(__dirname, 'build'),
+        path: path.resolve(__dirname, 'server/public'),
         filename: "bundle.js"
     },
     plugins: [
@@ -52,7 +52,17 @@ module.exports = {
             stores: path.join(__dirname, '/app/stores'),
             routes: path.join(__dirname, '/app/routes/routes'),
             mock: path.join(__dirname, 'mock'),
-            utils: path.join(__dirname, 'app/utils')
+            utils: path.join(__dirname, '/app/utils'),
+            models: path.join(__dirname, '/app/models'),
+            collections: path.join(__dirname, '/app/collections'),
+            routerHistory: path.join(__dirname, 'app/routes/history')
+        }
+    },
+    devServer: {
+        host: 'localhost',
+        port: 8080,
+        proxy: {
+            '*': 'http://localhost:3000'
         }
     }
 };

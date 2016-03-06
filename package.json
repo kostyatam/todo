@@ -4,6 +4,7 @@
   "description": "simple todo app",
   "main": "index.js",
   "scripts": {
+    "start": "webpack-dev-server --hot",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "kostyatam",
@@ -18,12 +19,16 @@
     "html-loader": "~0.2.2",
     "reflux": "^0.3.0",
     "webpack": "^1.12.12",
-    "webpack-dev-server": "^1.14.1"
+    "webpack-dev-server": "^1.14.1",
+    "koa": "^1.1.2",
+    "koa-router": "^5.3.0",
+    "co": "^4.6.0"
   },
   "dependencies": {
     "babel-polyfill": "^6.3.14",
     "babel-preset-react": "^6.3.13",
     "history": "^1.17.0",
+    "koa-static": "^2.0.0",
     "react": "^0.14.6",
     "react-dom": "^0.14.6",
     "react-router": "^1.0.3"

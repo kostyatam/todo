@@ -1,10 +1,8 @@
 'use strict'
 
 import React from 'react';
-import actions from 'actions';
-import utils from 'utils';
-
-let {todoActions} = actions;
+import {todoActions} from 'actions';
+import {keys} from 'utils';
 
 export default class ListHeader extends React.Component {
     constructor (props) {
@@ -25,7 +23,7 @@ export default class ListHeader extends React.Component {
         let item = event.target;
         let task = item.value;
         let dest = this.state.dest;
-        if (utils.keys.isEnter(event)) {
+        if (keys.isEnter(event)) {
             todoActions.createItem(dest, task);
             item.value = '';
             return;

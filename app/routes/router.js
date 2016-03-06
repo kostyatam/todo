@@ -1,18 +1,16 @@
 'use strict'
 import React from 'react';
-import {Router, Route, Link } from 'react-router';
-import createBrowserHistory from 'history/lib/createBrowserHistory';
-import routes from 'routes';
-
-let browserHistory = createBrowserHistory();
-let List = routes.list;
+import {Router, Route, Redirect, Link} from 'react-router';
+import {List, Otherwise} from 'routes';
+import history from 'routerHistory';
 
 class AppRouter {
     constructor() {
         return (
-            <Router history={browserHistory}>
-                <Route path="/" component={List}>
-                </Route>
+            <Router path="/" history={history}>
+                <Route path="lists/:id" component={List}/>
+                <Route path="error/404" component={Otherwise}/>
+                <Redirect from="*" to="error/404" />
             </Router>)
     }
 }

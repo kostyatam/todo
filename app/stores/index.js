@@ -2,6 +2,6 @@
 
 import todoStore from './todoStore';
 
-export default {
+export {
     todoStore
 }

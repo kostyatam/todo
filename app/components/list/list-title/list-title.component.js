@@ -1,9 +1,7 @@
 'use strict';
 
 import React from 'react';
-import actions from 'actions';
-
-let todoActions = actions.todoActions;
+import {todoActions} from 'actions';
 
 export default class ListTitle extends React.Component {
     constructor (props) {

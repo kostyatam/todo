@@ -1,95 +1,95 @@
 'use strict';
 
 import Reflux from 'reflux';
-import actions from 'actions';
-import mock from 'mock';
-let {lists} = mock;
-let {todoActions} = actions;
+import {todoActions} from 'actions';
+import {types, Collection, Events, helpers} from 'utils';
+import {Lists} from 'collections';
+
 let todoStore = Reflux.createStore({
     listenables: todoActions,
     onChangeItem: onItemChange,
     onCreateItem: onCreateItem,
     onDeleteItem: onDeleteItem,
-    onGetLists: function () {
-        this.trigger(lists);
-    }
+    onGetLists: onGetLists,
+    onCreateList: onCreateList
 });
+
+let saveLocal = helpers.debouncer((lists) => {
+    localStorage.setItem('lists', JSON.stringify(lists));
+}, 1000);
+
+todoStore.onGetLists();
 
 export default todoStore;
 
-function isObject (item) {
-    return item !== null && typeof item === 'object';
+function onCreateList (list, options = {}) {
+    this.lists.addList(list, options);
 }
 
-function onCreateItem (dest, ...params) {
-    let {listId} = dest;
-    let tasks = getTasksById(listId);
-    console.log(params[0])
-    if (params.length === 1 && typeof params[0] === 'string') {
-        let task = params[0];
-        tasks.push({
-            task,
-            isDone: false
-        })
-        this.trigger(lists);
+function onGetLists () {
+    let savedLists = localStorage.getItem('lists') !== 'undefined' ? localStorage.getItem('lists') : '[]';
+    let localLists = JSON.parse(savedLists);
+    if (!this.lists) {
+        this.lists = new Lists(localLists, {
+            on: {
+                change: (collection) => {
+                    this.trigger(collection);
+                    saveLocal(collection);
+                }
+            }
+        });
+    }
+    if (!this.loaded) {
+        let getLists = new Promise((resolve, reject) => {
+            let xhr = new XMLHttpRequest;
+            xhr.open('GET', '/api/lists', true);
+            xhr.send();
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState !== 4) return;
+                let res = JSON.parse(xhr.responseText);
+                if (xhr.status === 200) {
+                    resolve(res);
+                    return;
+                }
+                if (xhr.status === 500) {
+                    reject(500);
+                    return;
+                }
+            }
+        });
+        getLists
+            .then((res) => {
+                let lists = res.lists;
+                this.lists.merge(lists);
+                this.loaded = true;
+            })
+            .catch((err) => {
+                this.loaded = true;
+                console.log(err, err.stack);
+                this.lists.merge([]);
+            });
         return;
-    };
+    }
+    this.trigger(this.lists)
+}
+
+function onCreateItem (...params) {
+    let {listId} = params.shift();
+    this.lists
+        .getListById(listId)
+        .addTask(...params);
 };
 
-function onItemChange (dest, ...params) {
-    let {listId, itemId} = dest;
-    let tasks = getTasksById(listId);
-    if (params.length === 1 && isObject(params[0])) {
-        let changes = params[0];
-        let task = tasks[itemId];
-        if (!task) {
-            throw new Error('Warning: key is absent');
-            return;
-        };
-        for(let prop in changes) {
-            if (!changes.hasOwnProperty(prop)) {
-                return;
-            }
-            if (!task.hasOwnProperty(prop)) {
-                task[prop] = changes[prop];
-            }
-        };
-        this.trigger(lists);
-        return;
-    };
-    if (params.length === 2 && typeof params[0] === 'string' && params[1] !== undefined) {
-        let task = tasks[itemId];
-        let prop = params[0];
-        let val = params[1];
-        if (!task) {
-            throw new Error('Warning: key is absent');
-            return;
-        };
-        if (!task.hasOwnProperty(prop)) {
-            throw new Error('Warning: wrong property');
-            return;
-        }
-        task[prop] = val;
-        console.log('changed')
-        this.trigger(lists);
-        return;
-    }
+function onItemChange (...params) {
+    let {listId, itemId} = params.shift();
+    this.lists
+        .getListById(listId)
+        .changeTask(itemId, ...params);
 }
 
-function onDeleteItem (dest, ...params) {
-    let {listId, itemId} = dest;
-    let tasks = getTasksById(listId);
-    if (params.length === 0) {
-        tasks.splice(itemId, 1);
-        this.trigger(lists);
-    }
-}
-
-function getTasksById (listId) {
-    for(let i = 0; i < lists.length; i++) {
-        if (lists[i].id === listId) {
-            return lists[i].tasks;
-        }
-    };
-    throw new Error('wrong listId, nothing was found');
+function onDeleteItem (...params) {
+    let {listId, itemId} = params.shift();
+    this.lists
+        .getListById(listId)
+        .deleteTask(itemId);
 }

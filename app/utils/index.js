@@ -1,7 +1,10 @@
 'use strict';
 
-import keys from './keys';
+import * as keys from './keys';
+import * as types from './types';
+import * as errors from './errors';
+import Collection from './collection';
+import Events from './events';
+import * as helpers from './helpers';
 
-export default {
-    keys
-}
+export {keys, types, errors, Collection, Events, helpers};
