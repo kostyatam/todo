@@ -28,7 +28,6 @@ export default class ListItem extends React.Component {
         let checkbox = event.target;
         let value = checkbox.checked;
         let dest = this.state.dest;
-
         todoActions.changeItem(dest, 'isDone', value);
     }
 

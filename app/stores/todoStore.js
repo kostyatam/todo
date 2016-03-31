@@ -11,6 +11,7 @@ let todoStore = Reflux.createStore({
     onCreateItem: onCreateItem,
     onDeleteItem: onDeleteItem,
     onGetLists: onGetLists,
+    onDeleteList: onDeleteList,
     onCreateList: onCreateList
 });
 
@@ -26,17 +27,18 @@ function onCreateList (list, options = {}) {
     this.lists.addList(list, options);
 }
 
+function onDeleteList (id) {
+    this.lists.removeList(id);
+}
+
 function onGetLists () {
     let savedLists = localStorage.getItem('lists') !== 'undefined' ? localStorage.getItem('lists') : '[]';
     let localLists = JSON.parse(savedLists);
     if (!this.lists) {
-        this.lists = new Lists(localLists, {
-            on: {
-                change: (collection) => {
-                    this.trigger(collection);
-                    saveLocal(collection);
-                }
-            }
+        this.lists = new Lists(localLists);
+        this.lists.on('change', () => {
+            this.trigger(this.lists);
+            saveLocal(this.lists);
         });
     }
     if (!this.loaded) {
@@ -65,8 +67,6 @@ function onGetLists () {
             })
             .catch((err) => {
                 this.loaded = true;
-                console.log(err, err.stack);
-                this.lists.merge([]);
             });
         return;
     }

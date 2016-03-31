@@ -4,34 +4,12 @@ import {types, helpers, Collection} from 'utils';
 import {List} from 'models';
 
 export default class Lists extends Collection {
-    constructor(lists = [], options = {}) {
+    constructor(lists = []) {
         let collection = lists.map(item => {
-            let list = new List(item, {
-                on: {
-                    change: () => {
-                        this.trigger('change', this);
-                    }
-                }
-            });
+            let list = new List(item);
             return list;
         });
-
         super(collection);
-
-        if (options.on) {
-            let events = options.on
-            for (let event in events) {
-                if (!events.hasOwnProperty(event)) {
-                    continue;
-                }
-                this.on(event, events[event]);
-            }
-        }
-        this.trigger('create', this);
-    }
-
-    isEmpty() {
-        return !this.collection.length
     }
 
     toJSON () {
@@ -39,7 +17,6 @@ export default class Lists extends Collection {
     }
 
     merge(newLists) {
-
         let mergeLists = this.collection.map((list) => {
             for (let i = 0, l = newLists.length; i < l; i++) {
                 if (newLists[i].id !== list.id) {
@@ -54,13 +31,8 @@ export default class Lists extends Collection {
         });
 
         newLists = newLists.map((item) => {
-            let list = new List(item, {
-                on: {
-                    change: () => {
-                        this.trigger('change', this);
-                    }
-                }
-            });
+            let list = new List(item);
+            list.on('change', () => this.trigger('change', this));
             return list;
         });
 
@@ -68,7 +40,12 @@ export default class Lists extends Collection {
         this.trigger('change', this);
     }
 
-    addList(list, options = {}) {
+    removeList (id) {
+        let ids = types.isArray(id) ? id : [id];
+        ids.map((id) => this.remove({id}));
+    }
+
+    addList (list, options = {}) {
         if (!list) {
             list = new List;
         }
@@ -80,11 +57,7 @@ export default class Lists extends Collection {
         if (!(list instanceof List)) {
         }
 
-        list.on('change', () => {
-            this.trigger('change', this);
-        });
-
-        this.collection.push(list);
+        this.push(list);
 
         if (!options.silence) {
             this.trigger('change', this);
@@ -95,15 +68,7 @@ export default class Lists extends Collection {
         return list;
     }
 
-    getListById(listId) {
-        let lists = this.collection;
-
-        for (let i = 0; i < lists.length; i++) {
-            if (lists[i].id === listId) {
-                return lists[i]
-            }
-        }
-        ;
-        return;
+    getListById(id) {
+        return this.find({id})[0];
     }
 }

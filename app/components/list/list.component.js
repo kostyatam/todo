@@ -1,9 +1,9 @@
 'use strict'
 
 import React from 'react';
-import ListItem from './list-item';
-import ListTitle from './list-title';
-import ListHeader from './list-header';
+import ListItem from './list-item/list-item.component';
+import ListTitle from './list-title/list-title.component';
+import ListHeader from './list-header/list-header.component';
 
 export default class List extends React.Component {
     constructor (props) {
@@ -15,22 +15,22 @@ export default class List extends React.Component {
     }
     render() {
         let state = this.state;
-        let items = buildListItems(state.tasks, state.listId);
+        let items = buildListItems(state.tasks, state.listId, state.create);
         let dest = {
             listId: state.listId
         };
 
         return (
             <section>
-                <ListTitle title={state.title}/>
-                <ListHeader dest={dest} task={state.task}/>
+                <ListTitle title={state.title} create={state.create}/>
+                <ListHeader dest={dest} task={state.task} create={state.create}/>
                 <ul>
                     {items}
                 </ul>
             </section>
         );
 
-        function buildListItems (tasks, listId) {
+        function buildListItems (tasks, listId, create) {
             return tasks.map((item, index) => {
                 let dest ={
                     listId,
@@ -41,7 +41,8 @@ export default class List extends React.Component {
                         <ListItem
                             key={index}
                             dest={dest}
-                            data={item}/>
+                            data={item}
+                            create={create}/>
                     </li>)
             });
         }
@@ -49,10 +50,11 @@ export default class List extends React.Component {
 }
 
 function getStateFromProps (props) {
-    let {list} = props;
+    let {list, create} = props;
     return {
         tasks: list.tasks,
         listId: list.id,
-        title: list.title
+        title: list.title,
+        create: create
     }
 }

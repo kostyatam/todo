@@ -1,8 +1,12 @@
 'use strict'
-import List from './list';
-import Otherwise from './otherwise';
+import List from './list/list.route';
+import Otherwise from './otherwise/otherwise.route';
+import Main from './main/main.route.js';
+import CreateList from './createList/createList.route';
 
 export {
     List,
-    Otherwise
+    CreateList,
+    Otherwise,
+    Main,
 }

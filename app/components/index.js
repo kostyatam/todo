@@ -1,5 +1,5 @@
 'use strict';
-import list from './list';
+import list from './list/list.component';
 
 export {
     list

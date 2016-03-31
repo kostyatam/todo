@@ -13,16 +13,6 @@ export default class List extends Events {
         this.on('change', () => {
             this.changeDate = new Date;
         });
-
-        if (options.on) {
-            let events = options.on
-            for (let event in events) {
-                if (!events.hasOwnProperty(event)) {
-                    continue;
-                }
-                this.on(event, events[event]);
-            }
-        }
     }
 
     addTask (...params) {
@@ -41,7 +31,7 @@ export default class List extends Events {
         return helpers.guid()
     }
     changeTask (id, ...params) {
-        if (!id) {
+        if (id === undefined) {
             throw new Error('can\'t find task for changing without id param');
             return;
         };

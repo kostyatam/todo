@@ -3,6 +3,7 @@
 import React from 'react';
 import {todoActions} from 'actions';
 import {keys} from 'utils';
+import history from 'routerHistory';
 
 export default class ListHeader extends React.Component {
     constructor (props) {
@@ -23,11 +24,21 @@ export default class ListHeader extends React.Component {
         let item = event.target;
         let task = item.value;
         let dest = this.state.dest;
-        if (keys.isEnter(event)) {
-            todoActions.createItem(dest, task);
-            item.value = '';
+
+        if (!keys.isEnter(event)) {
             return;
         }
+        if (this.props.create) {
+            todoActions.createList({id: dest.listId}, {
+                after: (newList) => {
+                    todoActions.createItem(dest, task);
+                    history.replaceState(null, `/lists/${newList.id}`);
+                }
+            });
+            return;
+        }
+        todoActions.createItem(dest, task);
+        item.value = '';
     }
     render () {
         let state = this.state;
