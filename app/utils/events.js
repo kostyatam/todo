@@ -13,6 +13,7 @@ export default class Events {
             this.events[name] = this.events[name] || [];
             this.events[name].push(handler);
         }
+        return this;
     }
 
     trigger (name, data) {

@@ -9,17 +9,16 @@ export default class ListHeader extends React.Component {
     constructor (props) {
         super(props);
         this.state = getStateFromProps(props);
-        this.onChange = this.onChange.bind(this);
         this.onKeyPress = this.onKeyPress.bind(this);
+        this.onChange = this.onChange.bind(this);
     }
+
+    onChange () {}
 
     componentWillReceiveProps (props) {
         this.setState(getStateFromProps(props));
     }
 
-    onChange (e) {
-
-    }
     onKeyPress (event) {
         let item = event.target;
         let task = item.value;
@@ -28,6 +27,7 @@ export default class ListHeader extends React.Component {
         if (!keys.isEnter(event)) {
             return;
         }
+
         if (this.props.create) {
             todoActions.createList({id: dest.listId}, {
                 after: (newList) => {
@@ -40,14 +40,16 @@ export default class ListHeader extends React.Component {
         todoActions.createItem(dest, task);
         item.value = '';
     }
+
     render () {
         let state = this.state;
 
         return (
             <input type="text"
-                   defaultVaule={state.task}
-                   onKeyPress={this.onKeyPress}
+                   value={state.task}
                    onChange={this.onChange}
+                   onKeyPress={this.onKeyPress}
+                   placeholder="enter new task"
                 />
         )
     }
@@ -58,19 +60,4 @@ function getStateFromProps (props) {
         task: props.task,
         dest: props.dest
     }
-}
-
-
-function isEnter (event) {
-    if (event.which == null) {
-        if (event.keyCode === 13) return null;
-        return true;
-    }
-
-    if (event.which != 0 && event.charCode != 0) {
-        if (event.which < 13) return null;
-        return true;
-    }
-
-    return null;
 }

@@ -11,8 +11,13 @@ export default class List extends Events {
         this.id = list.id || this.createId();
         this.tasks = list.tasks || [];
         this.on('change', () => {
-            this.changeDate = new Date;
+            this.lastUpdate = new Date;
         });
+    }
+
+    changeTitle (title) {
+        this.title = title;
+        this.trigger('change');
     }
 
     addTask (...params) {
@@ -22,6 +27,7 @@ export default class List extends Events {
                 task,
                 isDone: false
             });
+            debugger
             this.trigger('change');
             return;
         };

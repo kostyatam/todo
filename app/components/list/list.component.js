@@ -22,8 +22,12 @@ export default class List extends React.Component {
 
         return (
             <section>
-                <ListTitle title={state.title} create={state.create}/>
-                <ListHeader dest={dest} task={state.task} create={state.create}/>
+                <div>
+                    <ListTitle dest={dest} title={state.title} create={state.create}/>
+                </div>
+                <div>
+                    <ListHeader dest={dest} task={state.task} create={state.create}/>
+                </div>
                 <ul>
                     {items}
                 </ul>

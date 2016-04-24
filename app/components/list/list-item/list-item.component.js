@@ -20,7 +20,6 @@ export default class ListItem extends React.Component {
         let item = event.target;
         let value = item.value;
         let dest = this.state.dest;
-
         todoActions.changeItem(dest, 'task', value);
     }
 

@@ -13,7 +13,7 @@ function guid() {
 module.exports =  [{
     title: 'first todo list ever',
     createDate: new Date('Fri Feb 05 2016 23:40:01 GMT+0300 (MSK)'),
-    changeDate: undefined,
+    lastUpdate: undefined,
     id: guid(),
     tasks: [{
         task: 'do more things',
@@ -28,7 +28,7 @@ module.exports =  [{
 }, {
     title: 'second todo list',
     createDate: new Date('Fri Feb 02 2016 13:40:01 GMT+0300 (MSK)'),
-    changeDate: undefined,
+    lastUpdate: undefined,
     id: guid(),
     tasks: [{
         task: 'do something',

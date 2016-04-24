@@ -97,6 +97,9 @@ export default class MainPage extends React.Component {
         let controls = state.marked.length ? (<button onClick={this.deleteMarked}>{'delete'}</button>) : '';
         return (
             <section>
+                <div>
+                    <Link to="/lists/new">create new</Link>
+                </div>
                 <button onClick={this.selectAll}>{selectionText}</button>
                 {controls}
                 <ul>

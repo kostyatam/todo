@@ -20,5 +20,8 @@ module.exports.getLists = function* (next) {
         this.status = 500;
         return;
     };
-    this.body = {lists: res};
+    this.body = {
+        lastUpdate: new Date,
+        lists: res
+    };
 };

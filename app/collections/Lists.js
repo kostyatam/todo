@@ -4,44 +4,92 @@ import {types, helpers, Collection} from 'utils';
 import {List} from 'models';
 
 export default class Lists extends Collection {
-    constructor(lists = []) {
+    constructor(lists = [], params = {}) {
         let collection = lists.map(item => {
             let list = new List(item);
             return list;
         });
         super(collection);
+        this.deleted = [];
+        this.lastUpdate = params.lastUpdate;
+        this.on('change', () => {
+            this.lastUpdate = new Date;
+        })
     }
 
     toJSON () {
-        return this.collection;
+        return {collection: this.collection, lastUpdate: this.lastUpdate};
     }
 
-    merge(newLists) {
-        let mergeLists = this.collection.map((list) => {
-            for (let i = 0, l = newLists.length; i < l; i++) {
-                if (newLists[i].id !== list.id) {
-                    continue;
-                }
-                let serverList = newLists.splice(i, 1)[0];
-                let serverDate = new Date(serverList.changeDate);
-                let localDate = new Date(list.changeDate);
-                return serverDate.getTime() > localDate.getTime() ? serverList : list;
-            };
-            return list;
+    merge(lists) {
+
+        let intersection = lists.filter((list) => {
+            let finded = this.getListById(list.id);
+            if (finded) {
+                return finded.lastUpdate > list.lastUpdate ? finded : list;
+            }
         });
 
-        newLists = newLists.map((item) => {
-            let list = new List(item);
-            list.on('change', () => this.trigger('change', this));
-            return list;
+        let newFromThere = lists.filter((list) => {
+            let finded = this.getListById(list.id);
+            if (!finded && this.deleted.indexOf(list.id) === -1) {
+                return list;
+            }
         });
 
-        this.collection = mergeLists.concat(newLists);
+        let newLocal= this.filter((list) => {
+            let finded = lists.getListById(list.id);
+            if (!finded && list.lastUpdate >= lists.lastUpdate) {
+                return list;
+            }
+        });
+
+        this.collection = [].concat(intersection, newFromThere, newLocal).map((list) => {
+            list.on('change', ()=> {
+                this.trigger('change', this);
+            });
+            return list;
+        });
         this.trigger('change', this);
+    }
+
+    updateFromLocal () {
+        let savedState = localStorage.savedState || '{}';
+        let {collection, lastUpdate} = JSON.parse(savedState);
+        this.merge(new Lists(collection, {lastUpdate}));
+        return this;
+    }
+
+    updateFromServer () {
+        let getLists = new Promise((resolve, reject) => {
+            let xhr = new XMLHttpRequest;
+            xhr.open('GET', '/api/lists', true);
+            xhr.send();
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState !== 4) return;
+                let res = JSON.parse(xhr.responseText);
+                if (xhr.status === 200) {
+                    resolve(res);
+                    return;
+                }
+                if (xhr.status === 500) {
+                    reject(500);
+                    return;
+                }
+            }
+        });
+        return getLists
+            .then((res) => {
+                let {lists, lastUpdate} = res;
+                this.merge(new Lists(lists, {lastUpdate}));
+            })
+            .catch((err) => {
+            });
     }
 
     removeList (id) {
         let ids = types.isArray(id) ? id : [id];
+        this.deleted.concat(ids);
         ids.map((id) => this.remove({id}));
     }
 
