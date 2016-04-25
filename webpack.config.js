@@ -9,7 +9,9 @@ var pathToReact = path.resolve(node_modules, 'react/dist/react.min.js');
 
 module.exports = {
     devtool: 'source-map',
-    entry: path.resolve(__dirname, 'app/app.js'),
+    entry: {
+        app: [path.resolve(__dirname, 'app/app.js')]
+    },
     output: {
         path: path.resolve(__dirname, 'server/public'),
         filename: "bundle.js"
@@ -27,10 +29,6 @@ module.exports = {
                     presets: ['react', 'es2015']
                 }
             },
-            /*{
-                test: /\.html$/,
-                loader: "html?name=[name].[ext]"
-            },*/
             {
                 test:   /\.styl$/,
                 loader: ExtractTextPlugin.extract('css!stylus?resolve url')

@@ -61,4 +61,4 @@ app.use(require('./routes/api/lists.js'));
 
 app.use(router.routes());
 
-app.listen(8080);
+app.listen(3000);
